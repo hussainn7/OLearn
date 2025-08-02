@@ -15,23 +15,26 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-4 left-4 right-4 z-50 bg-white/70 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg">
-      <div className="flex items-center justify-center px-6 py-3">
-        <div className="flex space-x-2">
+    <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in">
+      <div className="bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 shadow-2xl px-2 py-2 hover:bg-white/15 transition-all duration-500">
+        <div className="flex space-x-1">
           {navItems.map(({ path, label, icon: Icon }) => {
             const isActive = location.pathname === path;
             return (
               <Link
                 key={path}
                 to={path}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 ${
+                className={`flex items-center space-x-3 px-6 py-3 rounded-2xl text-lg font-medium transition-all duration-300 relative group ${
                   isActive
-                    ? 'bg-black text-white shadow-lg'
-                    : 'text-black hover:bg-white/50'
+                    ? 'bg-white text-black shadow-lg scale-105'
+                    : 'text-white hover:bg-white/20 hover:scale-105'
                 }`}
               >
-                <Icon size={20} />
-                <span>{label}</span>
+                <Icon size={22} className="transition-transform duration-300 group-hover:scale-110" />
+                <span className="hidden sm:block">{label}</span>
+                {isActive && (
+                  <div className="absolute inset-0 bg-white rounded-2xl animate-scale-in"></div>
+                )}
               </Link>
             );
           })}
