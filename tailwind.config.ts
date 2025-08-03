@@ -115,6 +115,14 @@ export default {
 					'50%': {
 						opacity: '0.6'
 					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px) rotate(0deg)'
+					},
+					'50%': {
+						transform: 'translateY(-20px) rotate(180deg)'
+					}
 				}
 			},
 			animation: {
@@ -122,7 +130,8 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.6s ease-out forwards',
 				'scale-in': 'scale-in 0.3s ease-out forwards',
-				'pulse': 'pulse 3s ease-in-out infinite'
+				'pulse': 'pulse 3s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite'
 			}
 		}
 	},
