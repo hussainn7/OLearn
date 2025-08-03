@@ -1,12 +1,12 @@
 
 import React from 'react';
 import GlassCard from './GlassCard';
-import { CheckCircle, Clock, Lock } from 'lucide-react';
+import { CheckCircle, Clock, Lock, Play } from 'lucide-react';
 
 interface PathNodeProps {
   title: string;
   description: string;
-  status: 'completed' | 'current' | 'locked';
+  status: 'completed' | 'in_progress' | 'not_started' | 'locked';
   progress?: number;
   onContinue?: () => void;
 }
@@ -16,8 +16,10 @@ const PathNode = ({ title, description, status, progress = 0, onContinue }: Path
     switch (status) {
       case 'completed':
         return <CheckCircle className="text-green-600" size={32} />;
-      case 'current':
+      case 'in_progress':
         return <Clock className="text-blue-600" size={32} />;
+      case 'not_started':
+        return <Play className="text-gray-600" size={32} />;
       case 'locked':
         return <Lock className="text-gray-400" size={32} />;
     }
@@ -27,12 +29,29 @@ const PathNode = ({ title, description, status, progress = 0, onContinue }: Path
     switch (status) {
       case 'completed':
         return 'bg-green-100 text-green-800';
-      case 'current':
+      case 'in_progress':
         return 'bg-blue-100 text-blue-800';
+      case 'not_started':
+        return 'bg-gray-100 text-gray-600';
       case 'locked':
         return 'bg-gray-100 text-gray-600';
     }
   };
+
+  const getStatusText = () => {
+    switch (status) {
+      case 'completed':
+        return 'Completed';
+      case 'in_progress':
+        return 'In Progress';
+      case 'not_started':
+        return 'Start';
+      case 'locked':
+        return 'Locked';
+    }
+  };
+
+  const showProgress = status === 'in_progress' || status === 'completed';
 
   return (
     <GlassCard className="p-8 hover:scale-105 transition-all duration-300">
@@ -46,7 +65,7 @@ const PathNode = ({ title, description, status, progress = 0, onContinue }: Path
         </div>
       </div>
       
-      {status === 'current' && (
+      {showProgress && (
         <div className="mb-4">
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div 
@@ -60,15 +79,15 @@ const PathNode = ({ title, description, status, progress = 0, onContinue }: Path
       
       <div className="flex items-center justify-between">
         <span className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusColor()}`}>
-          {status === 'completed' ? 'Completed' : status === 'current' ? 'In Progress' : 'Locked'}
+          {getStatusText()}
         </span>
         
-        {(status === 'completed' || status === 'current') && (
+        {(status === 'completed' || status === 'in_progress' || status === 'not_started') && (
           <button
             onClick={onContinue}
             className="px-6 py-3 border-2 border-black text-black rounded-xl text-lg font-semibold hover:bg-black hover:text-white transition-all duration-300"
           >
-            {status === 'completed' ? 'Review' : 'Continue'}
+            {status === 'completed' ? 'Review' : status === 'in_progress' ? 'Continue' : 'Start'}
           </button>
         )}
       </div>

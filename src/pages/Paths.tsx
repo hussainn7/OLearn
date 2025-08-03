@@ -3,52 +3,59 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import PathNode from '@/components/PathNode';
 import { useNavigate } from 'react-router-dom';
+import { useProgress } from '@/contexts/ProgressContext';
 
 const Paths = () => {
   const navigate = useNavigate();
+  const { getProgressForPath, getPathStatus, isLoading } = useProgress();
   
+  // Keep the original hardcoded paths
   const learningPaths = [
     {
+      id: "smartphone-basics",
       title: "Smartphone Basics",
       description: "Master your phone's essential features, from making calls to sending messages",
-      status: 'current' as const,
-      progress: 65
     },
     {
+      id: "online-security", 
       title: "Online Security",
       description: "Learn to protect yourself from scams, phishing, and online threats",
-      status: 'completed' as const,
-      progress: 100
     },
     {
-      title: "Email Essentials",
+      id: "email-essentials",
+      title: "Email Essentials", 
       description: "Send, receive, and organize your emails with confidence",
-      status: 'current' as const,
-      progress: 30
     },
     {
+      id: "social-media-safety",
       title: "Social Media Safety",
       description: "Connect with family while staying safe on Facebook and other platforms",
-      status: 'locked' as const,
-      progress: 0
     },
     {
+      id: "video-calling",
       title: "Video Calling",
       description: "Stay connected with loved ones through Zoom, FaceTime, and WhatsApp",
-      status: 'locked' as const,
-      progress: 0
     },
     {
+      id: "online-shopping",
       title: "Online Shopping",
       description: "Shop safely online and avoid common pitfalls",
-      status: 'locked' as const,
-      progress: 0
     }
   ];
 
-  const handleContinue = (title: string) => {
-    navigate('/lesson', { state: { lessonTitle: title } });
+  const handleContinue = (title: string, pathId: string) => {
+    navigate('/lesson', { state: { lessonTitle: title, pathId: pathId } });
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -59,16 +66,23 @@ const Paths = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {learningPaths.map((path, index) => (
-            <PathNode
-              key={index}
-              title={path.title}
-              description={path.description}
-              status={path.status}
-              progress={path.progress}
-              onContinue={() => handleContinue(path.title)}
-            />
-          ))}
+          {learningPaths.map((path, index) => {
+            // Get real progress for this path
+            const progress = getProgressForPath(path.id);
+            const status = getPathStatus(path.id);
+            const progressPercentage = progress?.progress_percentage || 0;
+
+            return (
+              <PathNode
+                key={path.id}
+                title={path.title}
+                description={path.description}
+                status={status}
+                progress={progressPercentage}
+                onContinue={() => handleContinue(path.title, path.id)}
+              />
+            );
+          })}
         </div>
       </div>
     </Layout>
